@@ -1,0 +1,42 @@
+# Model Configuration
+
+model:
+  type: "gnn_gru"  # gnn_gru or gnn_lstm
+  gnn_type: "gcn"  # gcn or gat
+  node_features: 8  # Number of input features per node
+  hidden_dim: 64
+  gnn_layers: 2
+  gru_hidden_dim: 128
+  dropout: 0.2
+  output_dim: 8  # Predicted features per node
+
+training:
+  batch_size: 32
+  epochs: 100
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  early_stopping_patience: 15
+  gradient_clip: 1.0
+  
+dataset:
+  sequence_length: 10  # Number of historical time steps
+  prediction_steps: 1  # Number of future steps to predict
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  num_nodes: 50
+  num_time_steps: 1000
+  
+data_generation:
+  graph_type: "barabasi_albert"  # barabasi_albert or erdos_renyi
+  avg_degree: 4
+  traffic_pattern: "periodic"  # periodic, bursty, or random
+  noise_level: 0.1
+  
+logging:
+  log_dir: "logs/"
+  checkpoint_dir: "checkpoints/"
+  save_frequency: 10  # Save checkpoint every N epochs
+  
+device: "cuda"  # cuda or cpu
+seed: 42

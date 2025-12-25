@@ -8,24 +8,7 @@ export const metadata: Metadata = {
   title: "Deep Learning Cyber Range | Research Project",
   description:
     "An intelligent system integrating graph neural network modeling, game-driven simulation, and multi-modal security detection for network attack and defense.",
-  generator: "v0.app",
-  icons: {
-    icon: [
-      {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
-    ],
-    apple: "/apple-icon.png",
-  },
+    generator: 'v0.app'
 }
 
 export default function RootLayout({
