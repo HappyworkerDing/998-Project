@@ -8,22 +8,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Shield, ArrowLeft, AlertTriangle, CheckCircle, Database, Server } from "lucide-react"
 import Link from "next/link"
 
- type CollectEvent = {
-  eventId: string
-  ts: number
-  modality: "network" | "host" | "log"
-  severity?: "low" | "medium" | "high"
-  type?: string
-  host?: string
-  source?: string
-  features: Record<string, any>
- }
+  type CollectEvent = {
+    eventId: string
+    ts: number
+    modality: "network" | "host" | "log"
+    severity?: "low" | "medium" | "high"
+    type?: string
+    host?: string
+    source?: string
+    features: Record<string, any>
+  }
+
 export default function IntrusionDetectionPage() {
   const sseRef = useRef<EventSource | null>(null)
 
  
-
-
   const [monitoring, setMonitoring] = useState(false)
   const [threatsDetected, setThreatsDetected] = useState(0)
   const [eventsProcessed, setEventsProcessed] = useState(0)
@@ -60,7 +59,7 @@ export default function IntrusionDetectionPage() {
   sseRef.current = es
 
   es.addEventListener("collect", (msg: MessageEvent) => {
-  console.log("SSE collect:", msg.data) // 🔥 用来确认真的收到了
+  console.log("SSE collect:", msg.data) // 用来确认真的收到了
 
   try {
     const evt = JSON.parse(msg.data)
@@ -71,14 +70,14 @@ export default function IntrusionDetectionPage() {
       setThreatsDetected((prev) => prev + 1)
     }
 
-        // 1) 维护最近事件列表（最多 50）
-    setRecentEvents((prev) => [evt, ...prev].slice(0, 50))
+      // 1) 维护最近事件列表（最多 50）
+      setRecentEvents((prev) => [evt, ...prev].slice(0, 50))
 
-    // 2) 三模态计数
-    setByModality((prev) => ({
-      ...prev,
+      // 2) 三模态计数
+      setByModality((prev) => ({
+       ...prev,
       [evt.modality]: (prev as any)[evt.modality] + 1,
-    }))
+      }))
 
     // 3) 告警列表（high 或 attack，最多 10）
     const isAlert = evt?.severity === "high" || String(evt?.type ?? "").includes("attack")
@@ -87,11 +86,12 @@ export default function IntrusionDetectionPage() {
     }
 
     // 4) 60 秒滑动窗口速率：只存 ts
-    setTsWindow((prev) => {
+     setTsWindow((prev) => {
       const now = Date.now()
-      const next = [evt.ts, ...prev].filter((t) => now - t <= 60_000)
-      return next.slice(0, 5000) // 防止极端情况过大
+      const next = [now, ...prev].filter((t) => now - t <= 60_000)
+      return next.slice(0, 5000)
     })
+
 
   } catch (e) {
     console.error("parse error", e)
