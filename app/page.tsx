@@ -94,8 +94,244 @@ export default function ResearchProjectPage() {
                     <span>Customizes the model for computer network traffic characteristics.</span>
                   </li>
                 </ul>
-                <div className="mt-6 p-4 bg-muted/30 rounded-lg border border-dashed border-border/50 min-h-[80px] flex items-center justify-center">
-                  <p className="text-xs text-muted-foreground text-center">Diagram placeholder</p>
+                <div className="mt-6 p-6 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/20">
+                  <svg viewBox="0 0 400 280" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <rect
+                        x="20"
+                        y="20"
+                        width="100"
+                        height="50"
+                        rx="8"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.1"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x="70"
+                        y="40"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="11"
+                        fontWeight="600"
+                      >
+                        Network
+                      </text>
+                      <text
+                        x="70"
+                        y="55"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="11"
+                        fontWeight="600"
+                      >
+                        Topology
+                      </text>
+                    </g>
+                    <g>
+                      <rect
+                        x="20"
+                        y="90"
+                        width="100"
+                        height="50"
+                        rx="8"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.1"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x="70"
+                        y="110"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="11"
+                        fontWeight="600"
+                      >
+                        Historical
+                      </text>
+                      <text
+                        x="70"
+                        y="125"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="11"
+                        fontWeight="600"
+                      >
+                        Traffic Data
+                      </text>
+                    </g>
+                    <g>
+                      <rect
+                        x="150"
+                        y="20"
+                        width="100"
+                        height="120"
+                        rx="8"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.15"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="2.5"
+                      />
+                      <text
+                        x="200"
+                        y="45"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="12"
+                        fontWeight="700"
+                      >
+                        GNN Layer
+                      </text>
+                      <text x="200" y="65" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="9">
+                        (GCN/GAT)
+                      </text>
+                      <circle cx="180" cy="90" r="8" fill="hsl(var(--primary))" fillOpacity="0.3" />
+                      <circle cx="200" cy="105" r="8" fill="hsl(var(--primary))" fillOpacity="0.3" />
+                      <circle cx="220" cy="90" r="8" fill="hsl(var(--primary))" fillOpacity="0.3" />
+                      <line x1="180" y1="90" x2="200" y2="105" stroke="hsl(var(--primary))" strokeWidth="1.5" />
+                      <line x1="200" y1="105" x2="220" y2="90" stroke="hsl(var(--primary))" strokeWidth="1.5" />
+                      <line x1="220" y1="90" x2="180" y2="90" stroke="hsl(var(--primary))" strokeWidth="1.5" />
+                      <text x="200" y="130" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="8">
+                        Spatial
+                      </text>
+                    </g>
+                    <g>
+                      <rect
+                        x="150"
+                        y="160"
+                        width="100"
+                        height="100"
+                        rx="8"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.15"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="2.5"
+                      />
+                      <text
+                        x="200"
+                        y="185"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="12"
+                        fontWeight="700"
+                      >
+                        GRU Layer
+                      </text>
+                      <text x="200" y="203" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="9">
+                        (Temporal)
+                      </text>
+                      <rect
+                        x="170"
+                        y="215"
+                        width="12"
+                        height="20"
+                        rx="2"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.3"
+                      />
+                      <rect
+                        x="185"
+                        y="215"
+                        width="12"
+                        height="25"
+                        rx="2"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.4"
+                      />
+                      <rect
+                        x="200"
+                        y="215"
+                        width="12"
+                        height="30"
+                        rx="2"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.5"
+                      />
+                      <rect
+                        x="215"
+                        y="215"
+                        width="12"
+                        height="22"
+                        rx="2"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.4"
+                      />
+                      <text x="200" y="253" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="8">
+                        Temporal
+                      </text>
+                    </g>
+                    <g>
+                      <rect
+                        x="280"
+                        y="100"
+                        width="100"
+                        height="60"
+                        rx="8"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.2"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x="330"
+                        y="125"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="11"
+                        fontWeight="600"
+                      >
+                        Traffic
+                      </text>
+                      <text
+                        x="330"
+                        y="140"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="11"
+                        fontWeight="600"
+                      >
+                        Prediction
+                      </text>
+                      <text x="330" y="152" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="8">
+                        (Future Steps)
+                      </text>
+                    </g>
+                    <defs>
+                      <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="hsl(var(--primary))" />
+                      </marker>
+                    </defs>
+                    <path
+                      d="M 120 45 L 148 55"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="2"
+                      fill="none"
+                      markerEnd="url(#arrowhead)"
+                    />
+                    <path
+                      d="M 120 115 L 148 105"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="2"
+                      fill="none"
+                      markerEnd="url(#arrowhead)"
+                    />
+                    <path
+                      d="M 200 142 L 200 158"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="2.5"
+                      fill="none"
+                      markerEnd="url(#arrowhead)"
+                    />
+                    <path
+                      d="M 252 210 L 278 145"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="2"
+                      fill="none"
+                      markerEnd="url(#arrowhead)"
+                    />
+                  </svg>
                 </div>
               </CardContent>
               <CardFooter className="border-t bg-muted/20 flex-col gap-3 items-stretch">
@@ -138,8 +374,192 @@ export default function ResearchProjectPage() {
                     </span>
                   </li>
                 </ul>
-                <div className="mt-6 p-4 bg-muted/30 rounded-lg border border-dashed border-border/50 min-h-[80px] flex items-center justify-center">
-                  <p className="text-xs text-muted-foreground text-center">Diagram placeholder</p>
+                <div className="mt-6 p-6 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/20">
+                  <svg viewBox="0 0 400 280" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <rect
+                        x="40"
+                        y="30"
+                        width="130"
+                        height="80"
+                        rx="8"
+                        fill="hsl(var(--destructive))"
+                        fillOpacity="0.1"
+                        stroke="hsl(var(--destructive))"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x="105"
+                        y="55"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="12"
+                        fontWeight="700"
+                      >
+                        Attacker Agent
+                      </text>
+                      <text x="105" y="75" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="9">
+                        WoLF-BSS-Q
+                      </text>
+                      <circle cx="105" cy="92" r="10" fill="hsl(var(--destructive))" fillOpacity="0.3" />
+                      <text
+                        x="105"
+                        y="97"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="10"
+                        fontWeight="600"
+                      >
+                        A
+                      </text>
+                    </g>
+                    <g>
+                      <rect
+                        x="230"
+                        y="30"
+                        width="130"
+                        height="80"
+                        rx="8"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.1"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x="295"
+                        y="55"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="12"
+                        fontWeight="700"
+                      >
+                        Defender Agent
+                      </text>
+                      <text x="295" y="75" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="9">
+                        WoLF-BSS-Q
+                      </text>
+                      <circle cx="295" cy="92" r="10" fill="hsl(var(--primary))" fillOpacity="0.3" />
+                      <text
+                        x="295"
+                        y="97"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="10"
+                        fontWeight="600"
+                      >
+                        D
+                      </text>
+                    </g>
+                    <g>
+                      <rect
+                        x="120"
+                        y="140"
+                        width="160"
+                        height="70"
+                        rx="8"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.15"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="2.5"
+                      />
+                      <text
+                        x="200"
+                        y="165"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="12"
+                        fontWeight="700"
+                      >
+                        Markov Game
+                      </text>
+                      <text x="200" y="182" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="9">
+                        Environment
+                      </text>
+                      <text x="200" y="200" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="8">
+                        State, Reward, Transition
+                      </text>
+                    </g>
+                    <g>
+                      <rect
+                        x="120"
+                        y="235"
+                        width="160"
+                        height="35"
+                        rx="6"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.2"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x="200"
+                        y="257"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="11"
+                        fontWeight="600"
+                      >
+                        Realistic Traffic Patterns
+                      </text>
+                    </g>
+                    <defs>
+                      <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="hsl(var(--primary))" />
+                      </marker>
+                      <marker id="arrowhead3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="hsl(var(--destructive))" />
+                      </marker>
+                    </defs>
+                    <path
+                      d="M 105 110 L 145 138"
+                      stroke="hsl(var(--destructive))"
+                      strokeWidth="2"
+                      fill="none"
+                      markerEnd="url(#arrowhead3)"
+                      strokeDasharray="4,2"
+                    />
+                    <path
+                      d="M 295 110 L 255 138"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="2"
+                      fill="none"
+                      markerEnd="url(#arrowhead2)"
+                      strokeDasharray="4,2"
+                    />
+                    <path
+                      d="M 155 140 Q 105 125 105 102"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="1.5"
+                      fill="none"
+                      markerEnd="url(#arrowhead2)"
+                    />
+                    <path
+                      d="M 245 140 Q 295 125 295 102"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="1.5"
+                      fill="none"
+                      markerEnd="url(#arrowhead2)"
+                    />
+                    <path
+                      d="M 200 210 L 200 233"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="2.5"
+                      fill="none"
+                      markerEnd="url(#arrowhead2)"
+                    />
+                    <text x="125" y="128" fill="hsl(var(--muted-foreground))" fontSize="8">
+                      Action
+                    </text>
+                    <text x="260" y="128" fill="hsl(var(--muted-foreground))" fontSize="8">
+                      Action
+                    </text>
+                    <text x="75" y="120" fill="hsl(var(--muted-foreground))" fontSize="8">
+                      Reward
+                    </text>
+                    <text x="310" y="120" fill="hsl(var(--muted-foreground))" fontSize="8">
+                      Reward
+                    </text>
+                  </svg>
                 </div>
               </CardContent>
               <CardFooter className="border-t bg-muted/20 flex-col gap-3 items-stretch">
@@ -188,8 +608,239 @@ export default function ResearchProjectPage() {
                     </span>
                   </li>
                 </ul>
-                <div className="mt-6 p-4 bg-muted/30 rounded-lg border border-dashed border-border/50 min-h-[80px] flex items-center justify-center">
-                  <p className="text-xs text-muted-foreground text-center">Diagram placeholder</p>
+                <div className="mt-6 p-6 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/20">
+                  <svg viewBox="0 0 400 280" className="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <rect
+                        x="30"
+                        y="20"
+                        width="90"
+                        height="40"
+                        rx="6"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.1"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="1.5"
+                      />
+                      <text
+                        x="75"
+                        y="45"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="10"
+                        fontWeight="600"
+                      >
+                        Network Traffic
+                      </text>
+                    </g>
+                    <g>
+                      <rect
+                        x="30"
+                        y="75"
+                        width="90"
+                        height="40"
+                        rx="6"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.1"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="1.5"
+                      />
+                      <text
+                        x="75"
+                        y="100"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="10"
+                        fontWeight="600"
+                      >
+                        System Logs
+                      </text>
+                    </g>
+                    <g>
+                      <rect
+                        x="30"
+                        y="130"
+                        width="90"
+                        height="40"
+                        rx="6"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.1"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="1.5"
+                      />
+                      <text
+                        x="75"
+                        y="155"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="10"
+                        fontWeight="600"
+                      >
+                        Host Behavior
+                      </text>
+                    </g>
+                    <g>
+                      <rect
+                        x="145"
+                        y="60"
+                        width="100"
+                        height="70"
+                        rx="8"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.15"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x="195"
+                        y="85"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="11"
+                        fontWeight="700"
+                      >
+                        Data Collection
+                      </text>
+                      <text x="195" y="102" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="8">
+                        (Go-based)
+                      </text>
+                      <text x="195" y="118" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="8">
+                        Timestamp Alignment
+                      </text>
+                    </g>
+                    <g>
+                      <rect
+                        x="270"
+                        y="60"
+                        width="100"
+                        height="70"
+                        rx="8"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.2"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="2.5"
+                      />
+                      <text
+                        x="320"
+                        y="85"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="11"
+                        fontWeight="700"
+                      >
+                        Multi-Modal
+                      </text>
+                      <text
+                        x="320"
+                        y="100"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="11"
+                        fontWeight="700"
+                      >
+                        Fusion
+                      </text>
+                      <circle cx="305" cy="115" r="6" fill="hsl(var(--primary))" fillOpacity="0.4" />
+                      <circle cx="320" cy="115" r="6" fill="hsl(var(--primary))" fillOpacity="0.5" />
+                      <circle cx="335" cy="115" r="6" fill="hsl(var(--primary))" fillOpacity="0.4" />
+                    </g>
+                    <g>
+                      <rect
+                        x="270"
+                        y="155"
+                        width="100"
+                        height="50"
+                        rx="8"
+                        fill="hsl(var(--primary))"
+                        fillOpacity="0.25"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="2.5"
+                      />
+                      <text
+                        x="320"
+                        y="177"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="11"
+                        fontWeight="700"
+                      >
+                        AI Detection
+                      </text>
+                      <text x="320" y="193" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="9">
+                        Deep Learning
+                      </text>
+                    </g>
+                    <g>
+                      <rect
+                        x="270"
+                        y="225"
+                        width="100"
+                        height="35"
+                        rx="6"
+                        fill="hsl(var(--destructive))"
+                        fillOpacity="0.15"
+                        stroke="hsl(var(--destructive))"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x="320"
+                        y="247"
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize="10"
+                        fontWeight="600"
+                      >
+                        Intrusion Alert
+                      </text>
+                    </g>
+                    <defs>
+                      <marker id="arrowhead4" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="hsl(var(--primary))" />
+                      </marker>
+                    </defs>
+                    <path
+                      d="M 120 40 L 143 75"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="1.5"
+                      fill="none"
+                      markerEnd="url(#arrowhead4)"
+                    />
+                    <path
+                      d="M 120 95 L 143 95"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="1.5"
+                      fill="none"
+                      markerEnd="url(#arrowhead4)"
+                    />
+                    <path
+                      d="M 120 150 L 143 115"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="1.5"
+                      fill="none"
+                      markerEnd="url(#arrowhead4)"
+                    />
+                    <path
+                      d="M 245 95 L 268 95"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="2"
+                      fill="none"
+                      markerEnd="url(#arrowhead4)"
+                    />
+                    <path
+                      d="M 320 130 L 320 153"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="2.5"
+                      fill="none"
+                      markerEnd="url(#arrowhead4)"
+                    />
+                    <path
+                      d="M 320 205 L 320 223"
+                      stroke="hsl(var(--destructive))"
+                      strokeWidth="2"
+                      fill="none"
+                      markerEnd="url(#arrowhead4)"
+                    />
+                  </svg>
                 </div>
               </CardContent>
               <CardFooter className="border-t bg-muted/20 flex-col gap-3 items-stretch">

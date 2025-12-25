@@ -5,31 +5,157 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Network, ArrowLeft, Play, RotateCcw, TrendingUp, Activity, Zap } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Network,
+  ArrowLeft,
+  Play,
+  RotateCcw,
+  TrendingUp,
+  Activity,
+  Zap,
+  AlertCircle,
+  Eye,
+  BarChart3,
+  GitBranch,
+  AlertTriangle,
+} from "lucide-react"
 import Link from "next/link"
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  ScatterChart,
+  Scatter,
+} from "recharts"
+
+interface SimulationResult {
+  predictions: number[][][]
+  historical_features: number[][][]
+  metrics: {
+    mse: number
+    mae: number
+    num_predictions: number
+  }
+  graph: {
+    num_nodes: number
+    num_edges: number
+    avg_degree: number
+    edge_list: [number, number][]
+  }
+  metadata: {
+    scenario: string
+    sequence_length: number
+    prediction_steps: number
+    num_features: number
+  }
+}
 
 export default function GNNSimulationPage() {
   const [isSimulating, setIsSimulating] = useState(false)
-  const [simulationProgress, setSimulationProgress] = useState(0)
+  const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-  const startSimulation = () => {
+  // Simulation parameters
+  const [numNodes, setNumNodes] = useState(50)
+  const [historyLength, setHistoryLength] = useState(10)
+  const [scenario, setScenario] = useState("periodic")
+  const [predictionSteps, setPredictionSteps] = useState(5)
+
+  const startSimulation = async () => {
     setIsSimulating(true)
-    setSimulationProgress(0)
-    const interval = setInterval(() => {
-      setSimulationProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          setIsSimulating(false)
-          return 100
-        }
-        return prev + 10
+    setError(null)
+
+    try {
+      const response = await fetch("/api/simulate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          num_nodes: numNodes,
+          history_length: historyLength,
+          scenario: scenario,
+          prediction_steps: predictionSteps,
+        }),
       })
-    }, 500)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || `Simulation failed: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      setSimulationResult(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Simulation failed")
+      console.error("[v0] Simulation error:", err)
+    } finally {
+      setIsSimulating(false)
+    }
   }
 
   const resetSimulation = () => {
-    setIsSimulating(false)
-    setSimulationProgress(0)
+    setSimulationResult(null)
+    setError(null)
+  }
+
+  const prepareChartData = () => {
+    if (!simulationResult) return []
+
+    const historical = simulationResult.historical_features
+    const predictions = simulationResult.predictions
+
+    // Use first node, first feature for visualization
+    const chartData = []
+
+    // Historical data
+    for (let t = 0; t < historical.length; t++) {
+      chartData.push({
+        time: t,
+        historical: historical[t][0][0],
+        type: "historical",
+      })
+    }
+
+    // Predictions
+    const predArray = predictionSteps === 1 ? [predictions] : predictions
+    for (let t = 0; t < predArray.length; t++) {
+      chartData.push({
+        time: historical.length + t,
+        prediction: predArray[t][0][0],
+        type: "prediction",
+      })
+    }
+
+    return chartData
+  }
+
+  const prepareScatterData = () => {
+    if (!simulationResult) return []
+
+    const historical = simulationResult.historical_features
+    const lastStep = historical[historical.length - 1]
+    const predictions = simulationResult.predictions
+
+    const firstPred = predictionSteps === 1 ? predictions : predictions[0]
+
+    const scatterData = []
+    for (let i = 0; i < Math.min(lastStep.length, 50); i++) {
+      scatterData.push({
+        actual: lastStep[i][0],
+        predicted: firstPred[i][0],
+      })
+    }
+
+    return scatterData
   }
 
   return (
@@ -64,6 +190,51 @@ export default function GNNSimulationPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            <div className="mb-6 p-4 bg-muted/20 rounded-lg border border-border/50">
+              <h3 className="font-semibold mb-3 text-foreground">Advanced Visualizations</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <Link href="/modules/gnn-simulation/topology">
+                  <Button variant="outline" className="w-full justify-start bg-transparent hover:bg-primary/10">
+                    <GitBranch className="w-4 h-4 mr-2" />
+                    Network Topology
+                  </Button>
+                </Link>
+                <Link href="/modules/gnn-simulation/heatmap">
+                  <Button variant="outline" className="w-full justify-start bg-transparent hover:bg-primary/10">
+                    <Eye className="w-4 h-4 mr-2" />
+                    Traffic Heatmap
+                  </Button>
+                </Link>
+                <Link href="/modules/gnn-simulation/analysis">
+                  <Button variant="outline" className="w-full justify-start bg-transparent hover:bg-primary/10">
+                    <BarChart3 className="w-4 h-4 mr-2" />
+                    Feature Analysis
+                  </Button>
+                </Link>
+              </div>
+              <h3 className="font-semibold mb-3 mt-6 text-foreground">System Tools</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <Link href="/modules/gnn-simulation/monitor">
+                  <Button variant="outline" className="w-full justify-start bg-transparent hover:bg-primary/10">
+                    <Activity className="w-4 h-4 mr-2" />
+                    Real-time Monitor
+                  </Button>
+                </Link>
+                <Link href="/modules/gnn-simulation/anomaly">
+                  <Button variant="outline" className="w-full justify-start bg-transparent hover:bg-primary/10">
+                    <AlertTriangle className="w-4 h-4 mr-2" />
+                    Anomaly Detection
+                  </Button>
+                </Link>
+                <Link href="/modules/gnn-simulation/training">
+                  <Button variant="outline" className="w-full justify-start bg-transparent hover:bg-primary/10">
+                    <TrendingUp className="w-4 h-4 mr-2" />
+                    Training History
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Card className="bg-muted/30 border-border/50">
                 <CardContent className="pt-6">
@@ -112,13 +283,74 @@ export default function GNNSimulationPage() {
         <Card className="border-border/50">
           <CardHeader>
             <CardTitle>Traffic Simulation Dashboard</CardTitle>
-            <CardDescription>Run and monitor GNN-based network traffic simulations</CardDescription>
+            <CardDescription>Configure and run GNN-based network traffic simulations</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Simulation Parameters */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="numNodes">Number of Nodes</Label>
+                <Input
+                  id="numNodes"
+                  type="number"
+                  min={10}
+                  max={200}
+                  value={numNodes}
+                  onChange={(e) => setNumNodes(Number.parseInt(e.target.value))}
+                  disabled={isSimulating}
+                />
+                <p className="text-xs text-muted-foreground">Network size (10-200 nodes)</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="historyLength">History Length</Label>
+                <Input
+                  id="historyLength"
+                  type="number"
+                  min={5}
+                  max={50}
+                  value={historyLength}
+                  onChange={(e) => setHistoryLength(Number.parseInt(e.target.value))}
+                  disabled={isSimulating}
+                />
+                <p className="text-xs text-muted-foreground">Historical time steps (5-50)</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="scenario">Traffic Pattern</Label>
+                <Select value={scenario} onValueChange={setScenario} disabled={isSimulating}>
+                  <SelectTrigger id="scenario">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="periodic">Periodic</SelectItem>
+                    <SelectItem value="bursty">Bursty</SelectItem>
+                    <SelectItem value="random">Random Walk</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">Synthetic traffic pattern type</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="predictionSteps">Prediction Steps</Label>
+                <Input
+                  id="predictionSteps"
+                  type="number"
+                  min={1}
+                  max={10}
+                  value={predictionSteps}
+                  onChange={(e) => setPredictionSteps(Number.parseInt(e.target.value))}
+                  disabled={isSimulating}
+                />
+                <p className="text-xs text-muted-foreground">Future steps to predict (1-10)</p>
+              </div>
+            </div>
+
+            {/* Control Buttons */}
             <div className="flex items-center gap-4">
               <Button onClick={startSimulation} disabled={isSimulating} className="flex items-center gap-2">
                 <Play className="w-4 h-4" />
-                Start Simulation
+                {isSimulating ? "Running..." : "Start Simulation"}
               </Button>
               <Button onClick={resetSimulation} variant="outline" className="flex items-center gap-2 bg-transparent">
                 <RotateCcw className="w-4 h-4" />
@@ -126,39 +358,140 @@ export default function GNNSimulationPage() {
               </Button>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Simulation Progress</span>
-                <span className="font-medium">{simulationProgress}%</span>
+            {error && (
+              <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-destructive mt-0.5" />
+                <div>
+                  <p className="font-semibold text-destructive">Simulation Error</p>
+                  <p className="text-sm text-muted-foreground">{error}</p>
+                </div>
               </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary transition-all duration-300"
-                  style={{ width: `${simulationProgress}%` }}
-                />
-              </div>
-            </div>
+            )}
 
-            {simulationProgress > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in duration-500">
+            {simulationResult && (
+              <div className="space-y-6 animate-in fade-in duration-500">
+                {/* Metrics */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card className="bg-muted/30 border-border/50">
+                    <CardContent className="pt-4">
+                      <p className="text-sm text-muted-foreground mb-2">Mean Squared Error</p>
+                      <p className="text-2xl font-bold text-primary">{simulationResult.metrics.mse.toFixed(6)}</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-muted/30 border-border/50">
+                    <CardContent className="pt-4">
+                      <p className="text-sm text-muted-foreground mb-2">Mean Absolute Error</p>
+                      <p className="text-2xl font-bold text-primary">{simulationResult.metrics.mae.toFixed(6)}</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-muted/30 border-border/50">
+                    <CardContent className="pt-4">
+                      <p className="text-sm text-muted-foreground mb-2">Network Edges</p>
+                      <p className="text-2xl font-bold text-primary">{simulationResult.graph.num_edges}</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Time Series Chart */}
                 <Card className="bg-muted/30 border-border/50">
-                  <CardContent className="pt-4">
-                    <p className="text-sm text-muted-foreground mb-2">Network Nodes Processed</p>
-                    <p className="text-2xl font-bold text-primary">{Math.floor(simulationProgress * 1.2)}</p>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Traffic Prediction Timeline</CardTitle>
+                    <CardDescription>Historical data vs predicted values (Node 0, Feature 0)</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <LineChart data={prepareChartData()}>
+                        <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                        <XAxis dataKey="time" label={{ value: "Time Step", position: "insideBottom", offset: -5 }} />
+                        <YAxis label={{ value: "Traffic Value", angle: -90, position: "insideLeft" }} />
+                        <Tooltip />
+                        <Legend />
+                        <Line
+                          type="monotone"
+                          dataKey="historical"
+                          stroke="#3b82f6"
+                          strokeWidth={2}
+                          name="Historical"
+                          dot={{ r: 3 }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="prediction"
+                          stroke="#10b981"
+                          strokeWidth={2}
+                          name="Prediction"
+                          dot={{ r: 4 }}
+                          strokeDasharray="5 5"
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
                   </CardContent>
                 </Card>
+
+                {/* Scatter Plot */}
                 <Card className="bg-muted/30 border-border/50">
-                  <CardContent className="pt-4">
-                    <p className="text-sm text-muted-foreground mb-2">Traffic Flows Generated</p>
-                    <p className="text-2xl font-bold text-primary">{Math.floor(simulationProgress * 3.5)}</p>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Prediction Accuracy</CardTitle>
+                    <CardDescription>Actual vs predicted values across all nodes</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <ScatterChart>
+                        <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                        <XAxis
+                          dataKey="actual"
+                          name="Actual"
+                          label={{ value: "Actual Values", position: "insideBottom", offset: -5 }}
+                        />
+                        <YAxis
+                          dataKey="predicted"
+                          name="Predicted"
+                          label={{ value: "Predicted Values", angle: -90, position: "insideLeft" }}
+                        />
+                        <Tooltip cursor={{ strokeDasharray: "3 3" }} />
+                        <Scatter name="Predictions" data={prepareScatterData()} fill="#3b82f6" />
+                        <Line
+                          type="monotone"
+                          dataKey="actual"
+                          stroke="#ef4444"
+                          strokeWidth={2}
+                          strokeDasharray="5 5"
+                          name="Perfect Prediction"
+                          dot={false}
+                        />
+                      </ScatterChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+
+                {/* Graph Info */}
+                <Card className="bg-muted/30 border-border/50">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Network Topology</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Nodes</p>
+                        <p className="text-xl font-bold">{simulationResult.graph.num_nodes}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Edges</p>
+                        <p className="text-xl font-bold">{simulationResult.graph.num_edges}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Avg Degree</p>
+                        <p className="text-xl font-bold">{simulationResult.graph.avg_degree.toFixed(2)}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Pattern</p>
+                        <p className="text-xl font-bold capitalize">{simulationResult.metadata.scenario}</p>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
             )}
-
-            <div className="min-h-[300px] bg-muted/30 rounded-lg border border-dashed border-border/50 flex items-center justify-center">
-              <p className="text-muted-foreground">Network Topology Visualization</p>
-            </div>
           </CardContent>
         </Card>
 

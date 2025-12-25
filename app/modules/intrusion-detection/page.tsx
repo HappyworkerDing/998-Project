@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -8,129 +8,32 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Shield, ArrowLeft, AlertTriangle, CheckCircle, Database, Server } from "lucide-react"
 import Link from "next/link"
 
- type CollectEvent = {
-  eventId: string
-  ts: number
-  modality: "network" | "host" | "log"
-  severity?: "low" | "medium" | "high"
-  type?: string
-  host?: string
-  source?: string
-  features: Record<string, any>
- }
 export default function IntrusionDetectionPage() {
-  const sseRef = useRef<EventSource | null>(null)
-
- 
-
-
   const [monitoring, setMonitoring] = useState(false)
   const [threatsDetected, setThreatsDetected] = useState(0)
   const [eventsProcessed, setEventsProcessed] = useState(0)
 
-  const [recentEvents, setRecentEvents] = useState<CollectEvent[]>([])
-  const [recentAlerts, setRecentAlerts] = useState<CollectEvent[]>([])
-  const [byModality, setByModality] = useState({ network: 0, host: 0, log: 0 })
-
-  // 最近 60 秒的事件时间戳，用来算速率（窗口统计）
-  const [tsWindow, setTsWindow] = useState<number[]>([])
-  const [eps, setEps] = useState(0) // events per second
-
-
   const startMonitoring = () => {
-
-    console.log("Start clicked")
     setMonitoring(true)
     setThreatsDetected(0)
     setEventsProcessed(0)
 
-    setRecentEvents([])
-    setRecentAlerts([])
-    setByModality({ network: 0, host: 0, log: 0 })
-    setTsWindow([])
-    setEps(0)
+    const interval = setInterval(() => {
+      setEventsProcessed((prev) => prev + Math.floor(Math.random() * 50) + 20)
+      if (Math.random() > 0.7) {
+        setThreatsDetected((prev) => prev + 1)
+      }
+    }, 1000)
 
+    setTimeout(() => {
+      clearInterval(interval)
+      setMonitoring(false)
+    }, 10000)
   }
-
-  useEffect(() => {
-  if (!monitoring) return
-
-  // 连接 SSE
-  const es = new EventSource("/api/collect/stream")
-  sseRef.current = es
-
-  es.addEventListener("collect", (msg: MessageEvent) => {
-  console.log("SSE collect:", msg.data) // 🔥 用来确认真的收到了
-
-  try {
-    const evt = JSON.parse(msg.data)
-
-    setEventsProcessed((prev) => prev + 1)
-
-    if (evt?.severity === "high" || String(evt?.type ?? "").includes("attack")) {
-      setThreatsDetected((prev) => prev + 1)
-    }
-
-        // 1) 维护最近事件列表（最多 50）
-    setRecentEvents((prev) => [evt, ...prev].slice(0, 50))
-
-    // 2) 三模态计数
-    setByModality((prev) => ({
-      ...prev,
-      [evt.modality]: (prev as any)[evt.modality] + 1,
-    }))
-
-    // 3) 告警列表（high 或 attack，最多 10）
-    const isAlert = evt?.severity === "high" || String(evt?.type ?? "").includes("attack")
-    if (isAlert) {
-      setRecentAlerts((prev) => [evt, ...prev].slice(0, 10))
-    }
-
-    // 4) 60 秒滑动窗口速率：只存 ts
-    setTsWindow((prev) => {
-      const now = Date.now()
-      const next = [evt.ts, ...prev].filter((t) => now - t <= 60_000)
-      return next.slice(0, 5000) // 防止极端情况过大
-    })
-
-  } catch (e) {
-    console.error("parse error", e)
-  }
-})
-
-
-  es.onerror = () => {
-    es.close()
-    sseRef.current = null
-  }
-
-  return () => {
-    es.close()
-    sseRef.current = null
-  }
-}, [monitoring])
-
-useEffect(() => {
-  if (!monitoring) return
-
-  const timer = setInterval(() => {
-    const now = Date.now()
-    // 窗口里有多少事件 / 60秒 = 平均每秒
-    const count = tsWindow.filter((t) => now - t <= 60_000).length
-    setEps(Number((count / 60).toFixed(2)))
-  }, 1000)
-
-  return () => clearInterval(timer)
-}, [monitoring, tsWindow])
-
-
 
   const stopMonitoring = () => {
-  setMonitoring(false)
-  sseRef.current?.close()
-  sseRef.current = null
-}
-
+    setMonitoring(false)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
@@ -264,21 +167,7 @@ useEffect(() => {
               </Card>
             </div>
 
-            <Card className="border-border/50">
-              <CardHeader>
-                <CardTitle className="text-base">Live Collection Metrics</CardTitle>
-                <CardDescription>Multi-modal counts + sliding window rate (60s)</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-2 items-center">
-                <Badge variant="outline">Network: {byModality.network}</Badge>
-                <Badge variant="outline">Host: {byModality.host}</Badge>
-                <Badge variant="outline">Log: {byModality.log}</Badge>
-                <Badge variant="secondary">EPS(60s): {eps}</Badge>
-              </CardContent>
-            </Card>
-
-
-            {recentAlerts.length > 0 && (
+            {threatsDetected > 0 && (
               <Card className="bg-destructive/5 border-destructive/20 animate-in fade-in duration-300">
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
@@ -288,28 +177,29 @@ useEffect(() => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    {recentAlerts.slice(0, 5).map((a) => (
-                      <div key={a.eventId} className="flex items-center justify-between p-3 bg-background rounded-lg">
+                    {Array.from({ length: Math.min(threatsDetected, 3) }).map((_, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 bg-background rounded-lg">
                         <div className="space-y-1">
-                          <p className="text-sm font-medium">{a.type ?? "alert"}</p>
+                          <p className="text-sm font-medium">
+                            {["Port Scan Detected", "SQL Injection Attempt", "Unusual Traffic Pattern"][i % 3]}
+                          </p>
                           <p className="text-xs text-muted-foreground">
-                            {(a.host ?? "-")} • {new Date(a.ts).toLocaleTimeString()} • {a.modality}
+                            {["192.168.1.45", "10.0.0.123", "172.16.5.89"][i % 3]} • Just now
                           </p>
                         </div>
-                        <Badge variant="destructive">{(a.severity ?? "high").toUpperCase()}</Badge>
+                        <Badge variant="destructive">High</Badge>
                       </div>
                     ))}
                   </div>
                 </CardContent>
               </Card>
             )}
-               <div className="min-h-[300px] bg-muted/30 rounded-lg border border-dashed border-border/50 flex items-center justify-center">
+
+            <div className="min-h-[300px] bg-muted/30 rounded-lg border border-dashed border-border/50 flex items-center justify-center">
               <p className="text-muted-foreground">Network Traffic Visualization</p>
             </div>
-
           </CardContent>
         </Card>
-
 
         {/* Technical Details */}
         <Tabs defaultValue="architecture" className="w-full">
